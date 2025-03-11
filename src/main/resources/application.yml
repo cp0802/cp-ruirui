@@ -1,0 +1,46 @@
+app:
+  id: 10016
+logging:
+  level:
+    root: info
+    com.adanxing.ad: debug
+server:
+  port: 8080
+  session-timeout: 1800
+  tomcat:
+      uri-encoding: UTF-8
+      max-threads: 2000
+      max-connections: 6000
+apollo:
+  meta: http://172.17.220.35:8080
+  bootstrap:
+    enabled: true
+    namespaces: application
+spring:
+  app-version: 1.0.1
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  profiles:
+    active: dev
+  redis:
+    timeout: 50
+    maxIdle: 3000
+    maxTotal: 3000
+    maxWaitMillis: 100
+    minEvictableIdleTimeMillis: 300000
+    numTestsPerEvictionRun: 1024
+    timeBetweenEvictionRunsMillis: 30000
+    testOnBorrow: true
+    testWhileIdle: true
+    block-when-exhausted: true
+    pool:
+      max-active: 3000
+      max-wait: 10000
+      max-total: 30000
+      max-idle: 3000
+      min-idle: 500
+
+
