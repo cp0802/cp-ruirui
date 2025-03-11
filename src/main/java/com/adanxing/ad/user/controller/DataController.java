@@ -26,11 +26,11 @@ public class DataController {
 
     @RequestMapping("syncStaticsData")
     @ResponseBody
-    public String syncStaticsData(String redis, String key, Integer size) {
+    public String syncStaticsData(String redis, String key, Integer size, Integer maxCount, Double randomRate) {
         if (StringUtils.isBlank(redis) || !StringUtils.equals(key, "123567") || Objects.isNull(size)) {
             return "false";
         }
-        log.info("[DataController] syncStaticsData start, key={}, redis={}, size={}", key, redis, size);
+        log.info("[DataController] syncStaticsData start, key={}, redis={}, size={}, maxCount={}, randomRate={}", key, redis, size, maxCount, randomRate);
         String[] redisArray = redis.split("\\:");
         AtomicInteger keyLength = new AtomicInteger();
         AtomicInteger totalMemoryUsage = new AtomicInteger();
@@ -39,7 +39,7 @@ public class DataController {
         Map<String, Map<String, Long>> dataMap = new HashMap<>();
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, redisArray[0], Integer.parseInt(redisArray[1]), 1000, "Anxiang861");
         try (Jedis jedis = jedisPool.getResource()) {
-            UserDeviceExtClearJob userDeviceExtClearJob = UserDeviceExtClearJob.builder().jedis(jedis).cursor("0").maxCount(10000).randomRate(1D).build();
+            UserDeviceExtClearJob userDeviceExtClearJob = UserDeviceExtClearJob.builder().jedis(jedis).cursor("0").maxCount(maxCount).randomRate(randomRate).build();
             R result = userDeviceExtClearJob.doClearRedis();
             log.info("[DataController] syncStaticsData, result={}", result);
 //            String cursor = "0";
