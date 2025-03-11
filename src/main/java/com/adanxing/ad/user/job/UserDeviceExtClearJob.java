@@ -68,7 +68,7 @@ public class UserDeviceExtClearJob {
                         if (checkFlag) {
                             long memoryUsagePre = jedis.memoryUsage(key);
                             jedis.hdel(key.getBytes(), fieldData.getKey());
-                            long memoryUsageAfter = jedis.memoryUsage(key);
+                            long memoryUsageAfter = jedis.exists(key) ? jedis.memoryUsage(key) : 0;
                             Map<String, Long> memoryUsageMap = memoryUsageTypeMap.getOrDefault(deviceExtType, new HashMap<>());
                             long totalCount = memoryUsageMap.getOrDefault("total_count", 0L) + 1;
                             memoryUsageMap.put("total_count", totalCount);
