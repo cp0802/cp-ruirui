@@ -37,8 +37,9 @@ public class UserDeviceExtClearJob extends Thread {
         jedisPoolConfig.setMaxIdle(10);
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 1000, "Anxiang861");
         String cursor = "0";
+        Jedis jedis = jedisPool.getResource();
         while(true) {
-            try (Jedis jedis = jedisPool.getResource()) {
+            try {
                 ScanResult<String> scanResult = jedis.scan(cursor);
                 List<String> keyList = scanResult.getResult();
                 if (CollectionUtils.isEmpty(keyList)) {
@@ -54,7 +55,6 @@ public class UserDeviceExtClearJob extends Thread {
                         dealProperties(jedis, key, fieldData);
                     });
                 });
-                jedis.close();
                 try {
                     Thread.sleep(300L);
                 } catch (InterruptedException e) {
