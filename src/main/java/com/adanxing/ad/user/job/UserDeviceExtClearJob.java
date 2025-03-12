@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.resps.ScanResult;
 
 import java.util.*;
@@ -20,7 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Builder
 public class UserDeviceExtClearJob extends Thread {
 
-    private Jedis jedis;
+    private String host;
+    private Integer port;
     private String cursor;
     private Integer maxCount;
     private Double randomRate;
@@ -31,8 +34,13 @@ public class UserDeviceExtClearJob extends Thread {
     @Override
     public void run() {
         log.info("[UserDeviceExtClearJob] doClearRedis start, maxCount={}, randomRate={}", maxCount, randomRate);
+
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxIdle(10);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 1000, "Anxiang861");
+
         while(true) {
-            try {
+            try (Jedis jedis = jedisPool.getResource()) {
                 ScanResult<String> scanResult = jedis.scan(cursor);
                 List<String> keyList = scanResult.getResult();
                 if (CollectionUtils.isEmpty(keyList)) {
@@ -48,6 +56,7 @@ public class UserDeviceExtClearJob extends Thread {
                         dealProperties(key, fieldData);
                     });
                 });
+                jedis.close();
                 try {
                     Thread.sleep(300L);
                 } catch (InterruptedException e) {
@@ -57,7 +66,7 @@ public class UserDeviceExtClearJob extends Thread {
                     break;
                 }
             } catch (Exception e) {
-                log.error("[UserDeviceExtClearJob] doClearRedis ing, cursor={}, total_count={}", cursor, totalCount.get(), e);
+                log.error("[UserDeviceExtClearJob] doClearRedis ing, redis={}, cursor={}, total_count={}", host + ":" + port, cursor, totalCount.get(), e);
             }
         }
         log.info("[UserDeviceExtClearJob] doClearRedis finish, total_count={}", totalCount.get());
