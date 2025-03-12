@@ -24,7 +24,6 @@ public class UserDeviceExtClearJob extends Thread {
 
     private String host;
     private Integer port;
-    private String cursor;
     private Integer maxCount;
     private Double randomRate;
     final AtomicInteger totalCount = new AtomicInteger();
@@ -34,11 +33,10 @@ public class UserDeviceExtClearJob extends Thread {
     @Override
     public void run() {
         log.info("[UserDeviceExtClearJob] doClearRedis start, maxCount={}, randomRate={}", maxCount, randomRate);
-
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(10);
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, 1000, "Anxiang861");
-
+        String cursor = "0";
         while(true) {
             try (Jedis jedis = jedisPool.getResource()) {
                 ScanResult<String> scanResult = jedis.scan(cursor);
@@ -46,7 +44,7 @@ public class UserDeviceExtClearJob extends Thread {
                 if (CollectionUtils.isEmpty(keyList)) {
                     break;
                 }
-                this.cursor = scanResult.getCursor();
+                cursor = scanResult.getCursor();
                 keyList.stream().forEach(key -> {
                     Map<byte[], byte[]> fieldMap = jedis.hgetAll(key.getBytes());
                     if (MapUtils.isEmpty(fieldMap)) {
