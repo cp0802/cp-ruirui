@@ -32,7 +32,7 @@ public class DataController {
             return "false";
         }
         log.info("[DataController] syncStaticsData start, key={}, redis={}, size={}, maxCount={}, randomRate={}", key, redis, size, maxCount, randomRate);
-        Arrays.stream(redis.split("\\.")).forEach(e -> {
+        Arrays.stream(redis.split("\\,")).forEach(e -> {
             String[] redisArray = e.split("\\:");
             JedisPool jedisPool = new JedisPool(jedisPoolConfig, redisArray[0], Integer.parseInt(redisArray[1]), 1000, "Anxiang861");
             try (Jedis jedis = jedisPool.getResource()) {
