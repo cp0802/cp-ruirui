@@ -53,7 +53,7 @@ public class UserDeviceExtClearJob extends Thread {
                         return;
                     }
                     fieldMap.entrySet().stream().forEach(fieldData -> {
-                        dealProperties(key, fieldData);
+                        dealProperties(jedis, key, fieldData);
                     });
                 });
                 jedis.close();
@@ -72,7 +72,7 @@ public class UserDeviceExtClearJob extends Thread {
         log.info("[UserDeviceExtClearJob] doClearRedis finish, total_count={}", totalCount.get());
     }
 
-    void dealProperties(String key, Map.Entry<byte[], byte[]> fieldData) {
+    void dealProperties(Jedis jedis, String key, Map.Entry<byte[], byte[]> fieldData) {
         DeviceExtEnum deviceExtType = DeviceExtUtils.convertDeviceExtType(fieldData.getKey());
         try {
             if (Objects.isNull(deviceExtType)) {

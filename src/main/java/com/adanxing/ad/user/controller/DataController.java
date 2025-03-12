@@ -31,12 +31,9 @@ public class DataController {
         log.info("[DataController] syncStaticsData start, key={}, redis={}, size={}, maxCount={}, randomRate={}", key, redis, size, maxCount, randomRate);
         Arrays.stream(redis.split(",")).forEach(e -> {
             String[] redisArray = e.split("\\:");
-
-
-                UserDeviceExtClearJob userDeviceExtClearJob = UserDeviceExtClearJob.builder().jedis(jedis).cursor("0").maxCount(maxCount).randomRate(randomRate).build();
-                userDeviceExtClearJob.run();
-                log.info("[DataController] syncStaticsData start, redis={}", e);
-            };
+            UserDeviceExtClearJob userDeviceExtClearJob = UserDeviceExtClearJob.builder().host(redisArray[0]).port(Integer.parseInt(redisArray[1])).cursor("0").maxCount(maxCount).randomRate(randomRate).build();
+            userDeviceExtClearJob.run();
+            log.info("[DataController] syncStaticsData start, redis={}", e);
         });
         return "true";
     }
