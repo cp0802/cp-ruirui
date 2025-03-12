@@ -32,28 +32,32 @@ public class UserDeviceExtClearJob extends Thread {
     public void run() {
         log.info("[UserDeviceExtClearJob] doClearRedis start, maxCount={}, randomRate={}", maxCount, randomRate);
         while(true) {
-            ScanResult<String> scanResult = jedis.scan(cursor);
-            List<String> keyList = scanResult.getResult();
-            if (CollectionUtils.isEmpty(keyList)) {
-                break;
-            }
-            this.cursor = scanResult.getCursor();
-            keyList.stream().forEach(key -> {
-                Map<byte[], byte[]> fieldMap = jedis.hgetAll(key.getBytes());
-                if (MapUtils.isEmpty(fieldMap)) {
-                    return;
-                }
-                fieldMap.entrySet().stream().forEach(fieldData -> {
-                    dealProperties(key, fieldData);
-                });
-            });
             try {
-                Thread.sleep(300L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (Objects.nonNull(maxCount) && maxCount > 0 && totalCount.addAndGet(keyList.size()) >= maxCount) {
-                break;
+                ScanResult<String> scanResult = jedis.scan(cursor);
+                List<String> keyList = scanResult.getResult();
+                if (CollectionUtils.isEmpty(keyList)) {
+                    break;
+                }
+                this.cursor = scanResult.getCursor();
+                keyList.stream().forEach(key -> {
+                    Map<byte[], byte[]> fieldMap = jedis.hgetAll(key.getBytes());
+                    if (MapUtils.isEmpty(fieldMap)) {
+                        return;
+                    }
+                    fieldMap.entrySet().stream().forEach(fieldData -> {
+                        dealProperties(key, fieldData);
+                    });
+                });
+                try {
+                    Thread.sleep(300L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (Objects.nonNull(maxCount) && maxCount > 0 && totalCount.addAndGet(keyList.size()) >= maxCount) {
+                    break;
+                }
+            } catch (Exception e) {
+                log.error("[UserDeviceExtClearJob] doClearRedis ing, cursor={}, total_count={}", cursor, totalCount.get(), e);
             }
         }
         log.info("[UserDeviceExtClearJob] doClearRedis finish, total_count={}", totalCount.get());
@@ -92,9 +96,8 @@ public class UserDeviceExtClearJob extends Thread {
                 default:
                     break;
             }
-        } catch (InvalidProtocolBufferException e) {
-            e.printStackTrace();
-            log.error("[UserDeviceExtClearJob] dealProperties fail, deviceExtType={}", deviceExtType, e);
+        } catch (Exception e) {
+            log.error("[UserDeviceExtClearJob] dealProperties fail, deviceExtType={}, key={}", deviceExtType, key, e);
         }
     }
 
