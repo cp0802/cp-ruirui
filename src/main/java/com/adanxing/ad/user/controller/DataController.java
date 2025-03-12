@@ -22,9 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequestMapping("data")
 public class DataController {
 
-    @Autowired
-    JedisPoolConfig jedisPoolConfig;
-
     @RequestMapping("syncStaticsData")
     @ResponseBody
     public String syncStaticsData(String redis, String key, Integer size, Integer maxCount, Double randomRate) {
@@ -34,10 +31,12 @@ public class DataController {
         log.info("[DataController] syncStaticsData start, key={}, redis={}, size={}, maxCount={}, randomRate={}", key, redis, size, maxCount, randomRate);
         Arrays.stream(redis.split(",")).forEach(e -> {
             String[] redisArray = e.split("\\:");
+            JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+            jedisPoolConfig.setMaxIdle(10);
             JedisPool jedisPool = new JedisPool(jedisPoolConfig, redisArray[0], Integer.parseInt(redisArray[1]), 1000, "Anxiang861");
             try (Jedis jedis = jedisPool.getResource()) {
                 UserDeviceExtClearJob userDeviceExtClearJob = UserDeviceExtClearJob.builder().jedis(jedis).cursor("0").maxCount(maxCount).randomRate(randomRate).build();
-                userDeviceExtClearJob.run();
+                userDeviceExtClearJob.start();
                 log.info("[DataController] syncStaticsData start, redis={}", e);
             };
         });
