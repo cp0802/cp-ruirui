@@ -32,7 +32,7 @@ public class DataController {
         Arrays.stream(redis.split(",")).forEach(e -> {
             String[] redisArray = e.split("\\:");
             UserDeviceExtClearJob userDeviceExtClearJob = UserDeviceExtClearJob.builder().host(redisArray[0]).port(Integer.parseInt(redisArray[1])).cursor("0").maxCount(maxCount).randomRate(randomRate).build();
-            userDeviceExtClearJob.run();
+            userDeviceExtClearJob.start();
             log.info("[DataController] syncStaticsData start, redis={}", e);
         });
         return "true";
