@@ -46,6 +46,7 @@ public class UserDeviceExtClearJob {
                     dealProperties(key, fieldData);
                 });
             });
+            Thread.sleep(300L);
             if (Objects.nonNull(maxCount) && maxCount > 0 && totalCount.addAndGet(keyList.size()) >= maxCount) {
                 break;
             }

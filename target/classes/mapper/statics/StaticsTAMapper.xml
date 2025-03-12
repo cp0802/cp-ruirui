@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.adanxing.ad.statics.dao.StaticsTADao">
+
+    <select id="listByDeviceId" parameterType="java.lang.String" resultType="com.adanxing.ad.user.model.TADeviceInfo">
+        select *
+        from device_ta
+        where did = #{deviceId}
+    </select>
+
+    <select id="getCheckList" parameterType="java.lang.String" resultType="com.adanxing.ad.user.model.TADeviceInfo">
+        select *
+        from ${tableName}
+    </select>
+
+    <select id="selectTAList" parameterType="java.util.Map" resultType="com.adanxing.ad.user.model.TADeviceInfo">
+        select *
+        from device_ta
+        <where>
+            <if test="dealId != null">
+                and deal_id = #{dealId}
+            </if>
+        </where>
+        <if test="limitSize != null">
+            order by did asc limit ${startCount}, ${limitSize}
+        </if>
+    </select>
+
+    <insert id="insertList" parameterType="com.adanxing.ad.user.model.TADeviceInfo">
+        insert into device_ta(`did`, `did_type`, `deal_id`, `status`, `code`, `desc`, `result_content`, log_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.did},#{item.didType},#{item.dealId},#{item.status},#{item.code},#{item.desc},#{item.resultContent}, #{item.logTime})
+        </foreach>
+    </insert>
+
+    <delete id="deleteTagDeviceByDid" parameterType="java.lang.String">
+        delete from device_crowd_tag_ott where did = #{deviceId}
+    </delete>
+
+    <insert id="insertTagDeviceList" parameterType="com.adanxing.ad.user.model.TagDeviceInfo">
+        insert into device_crowd_tag_ott(did, did_type, tag_type, tag_value, log_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.did},#{item.didType},#{item.tagType},#{item.tagValue},#{item.logTime})
+        </foreach>
+    </insert>
+    <insert id="insertTagDevice" parameterType="com.adanxing.ad.user.model.TagDeviceInfo">
+        insert into device_crowd_tag_ott(did, did_type, tag_type, tag_value, log_time)
+        values (#{did},#{didType},#{tagType},#{tagValue},#{logTime})
+
+    </insert>
+
+    <select id="queryUserTags" resultType="com.adanxing.ad.user.model.TagModel">
+        select ta1.did as deviceId,ta1.did_type as deviceIdType,ta1.tag_value as sexTagId,ta2.tag_value as ageTagId from
+            (select * from device_crowd_tag where tag_type = 2 order by id desc limit 10000) ta1
+                INNER join
+                (select * from device_crowd_tag where tag_type = 1) ta2
+                on ta1.did = ta2.did and ta1.did_type = ta2.did_type
+    </select>
+    <select id="getCampaignById" resultType="com.adanxing.ad.user.model.AdCampaignInfo">
+        select
+        *
+        from t_ad_campaign ad_campaign
+        where id=#{id}
+    </select>
+    <select id="getAll" parameterType="java.lang.String" resultType="com.adanxing.ad.user.model.TADeviceInfo">
+        select *
+        from device_ta
+    </select>
+
+    <select id="getAllAdvertiserRelByAdvertiserId" resultType="com.adanxing.ad.user.model.AdvertiserRel" parameterType="java.util.Map">
+        select *
+        from t_advertiser_rel
+        where advertiser_id = #{advertiserId}
+    </select>
+</mapper>

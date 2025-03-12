@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.adanxing.ad.user.dao.SspAdvertiserFeatureDao">
+
+    <select id="getSspAdvertiserDeviceList" parameterType="java.util.Map" resultType="com.adanxing.ad.user.model.SspAdvertiserDeviceInfo">
+        select *
+        from ${tableName}
+        where log_time &gt;= #{startTime} and log_time &lt; #{endTime}
+        order by did asc
+        <if test="limitSize != null">
+            limit ${startCount}, ${limitSize}
+        </if>
+    </select>
+
+</mapper>
