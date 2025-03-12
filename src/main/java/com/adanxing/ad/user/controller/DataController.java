@@ -37,8 +37,8 @@ public class DataController {
             JedisPool jedisPool = new JedisPool(jedisPoolConfig, redisArray[0], Integer.parseInt(redisArray[1]), 1000, "Anxiang861");
             try (Jedis jedis = jedisPool.getResource()) {
                 UserDeviceExtClearJob userDeviceExtClearJob = UserDeviceExtClearJob.builder().jedis(jedis).cursor("0").maxCount(maxCount).randomRate(randomRate).build();
-                R result = userDeviceExtClearJob.doClearRedis();
-                log.info("[DataController] syncStaticsData, result={}", result);
+                userDeviceExtClearJob.start();
+                log.info("[DataController] syncStaticsData start, redis={}", e);
             };
         });
         return "true";

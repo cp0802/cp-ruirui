@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Builder
-public class UserDeviceExtClearJob {
+public class UserDeviceExtClearJob extends Thread {
 
     private Jedis jedis;
     private String cursor;
@@ -28,7 +28,8 @@ public class UserDeviceExtClearJob {
     final Map<DeviceExtEnum, Map<String, Long>> memoryUsageTypeMap = new HashMap<>();
     static final Random RANDOM = new Random();
 
-    public R doClearRedis() {
+    @Override
+    public void run() {
         log.info("[UserDeviceExtClearJob] doClearRedis start, maxCount={}, randomRate={}", maxCount, randomRate);
         while(true) {
             ScanResult<String> scanResult = jedis.scan(cursor);
@@ -56,7 +57,6 @@ public class UserDeviceExtClearJob {
             }
         }
         log.info("[UserDeviceExtClearJob] doClearRedis finish, total_count={}", totalCount.get());
-        return R.ok().put("totalCount", totalCount.get());
     }
 
     void dealProperties(String key, Map.Entry<byte[], byte[]> fieldData) {
