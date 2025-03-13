@@ -56,7 +56,7 @@ public class UserDeviceExtClearJob extends Thread {
                     });
                 });
                 try {
-                    Thread.sleep(300L);
+                    Thread.sleep(10L);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
