@@ -1,5 +1,6 @@
 package com.adanxing.ad.user.controller;
 
+import com.adanxing.ad.user.job.InstallAppJobHandler;
 import com.adanxing.ad.user.job.UserDeviceExtClearJob;
 import com.adanxing.ad.user.model.R;
 import com.adanxing.ad.user.utils.JSONUtils;
@@ -22,6 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequestMapping("data")
 public class DataController {
 
+    @Autowired
+    InstallAppJobHandler installAppJobHandler;
+
     @RequestMapping("syncStaticsData")
     @ResponseBody
     public String syncStaticsData(String redis, String key, Integer size, Integer maxCount, Double randomRate) {
@@ -35,6 +39,19 @@ public class DataController {
             userDeviceExtClearJob.start();
             log.info("[DataController] syncStaticsData start, redis={}", e);
         });
+        return "true";
+    }
+
+
+    @RequestMapping("deviceInstallApp")
+    @ResponseBody
+    public String deviceInstallAppMergeJob() {
+        try {
+            log.info("[DataController] deviceInstallAppMergeJob start");
+            installAppJobHandler.deviceInstallAppMergeJob();
+        }catch (Exception e){
+            log.info("[DataController] deviceInstallAppMergeJob exception", e);
+        }
         return "true";
     }
 
