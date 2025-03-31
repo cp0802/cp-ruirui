@@ -42,17 +42,4 @@ public class DataController {
         return "true";
     }
 
-
-    @RequestMapping("deviceInstallApp")
-    @ResponseBody
-    public String deviceInstallAppMergeJob() {
-        try {
-            log.info("[DataController] deviceInstallAppMergeJob start");
-            installAppJobHandler.deviceInstallAppMergeJob();
-        }catch (Exception e){
-            log.info("[DataController] deviceInstallAppMergeJob exception", e);
-        }
-        return "true";
-    }
-
 }
