@@ -11,6 +11,7 @@ import com.adanxing.ad.user.model.DeviceInstallAppModel;
 import com.adanxing.ad.user.service.ConfigService;
 import com.adanxing.ad.user.service.JedisClusterService;
 import com.alibaba.fastjson.TypeReference;
+import com.google.common.primitives.Bytes;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -199,13 +200,13 @@ public class InstallAppJobHandler {
                 .map(model -> DeviceExtUtils.getDeviceExtUserKey(model.getDid(),model.getDidType()).getBytes(StandardCharsets.UTF_8)).collect(Collectors.toSet());
         byte[] redisField = ByteUtils.intToBytes(DeviceExtEnum.DEVICE_INSTALL_APP_NEW_INFO.getCode());
         //批次查询redis
-        Map<byte[], byte[]> batchRedisDeviceInstallAppMap = deviceExtNewClusterService.batchHGet(batchDeviceExtUserKeyList,redisField);
+        Map<List<Byte>, byte[]> batchRedisDeviceInstallAppMap = deviceExtNewClusterService.batchHGet(batchDeviceExtUserKeyList,redisField);
         long t12 = System.currentTimeMillis();
 //        log.info("XXL-JOB, deviceInstallApp.threadName={} fillRedisDeviceInstallAppInfo-batchHGet 完成 page={},batch={}, size={},cost_time={}ms ",Thread.currentThread().getName(),page,batch,batchDeviceExtUserKeyList.size(), t12 - t11);
         Map<byte[], byte[]> newBatchRedisDeviceInstallAppMap = new HashMap<>();
         for(DeviceInstallAppModel model : filterBatchDeviceInstallAppList){
             byte[] redisKey = DeviceExtUtils.getDeviceExtUserKey(model.getDid(),model.getDidType()).getBytes(StandardCharsets.UTF_8);
-            byte[] redisValue = batchRedisDeviceInstallAppMap.get(redisKey);
+            byte[] redisValue = batchRedisDeviceInstallAppMap.get(Bytes.asList(redisKey));
             AdanxingProto.DeviceInstallNewFeature.Builder deviceInstallFeature = null;
             boolean  newFeatureFlag =  false;
             int trustBitInstallAppIds = model.getTrustBitInstallAppIds();

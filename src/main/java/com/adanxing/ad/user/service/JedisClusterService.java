@@ -1,5 +1,6 @@
 package com.adanxing.ad.user.service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public interface JedisClusterService {
 
     String get(String key, String defaultValue);
 
-    Map<byte[], byte[]> batchHGet(Set<byte[]> keys, byte[] field);
+    Map<List<Byte>, byte[]> batchHGet(Set<byte[]> keys, byte[] field);
 
     boolean batchHSet(Map<byte[], byte[]> keyValueMap, byte[] field);
 

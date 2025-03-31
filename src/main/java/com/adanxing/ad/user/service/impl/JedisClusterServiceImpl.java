@@ -1,6 +1,7 @@
 package com.adanxing.ad.user.service.impl;
 
 import com.adanxing.ad.user.service.JedisClusterService;
+import com.google.common.primitives.Bytes;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.*;
@@ -126,8 +127,8 @@ public class JedisClusterServiceImpl implements JedisClusterService {
     }
 
     @Override
-    public Map<byte[], byte[]> batchHGet(Set<byte[]> keys, byte[] field) {
-        Map<byte[], byte[]> resultMap = new HashMap<>();
+    public Map<List<Byte>, byte[]> batchHGet(Set<byte[]> keys, byte[] field) {
+        Map<List<Byte>, byte[]> resultMap = new HashMap<>();
         if (keys == null || keys.isEmpty()) return resultMap;
 
         // 获取集群节点和槽位映射（同之前实现）
@@ -155,7 +156,7 @@ public class JedisClusterServiceImpl implements JedisClusterService {
 
                 responses.forEach((key, resp) -> {
                     byte[] value = resp.get();
-                    if (value != null) resultMap.put(key, value);
+                    if (value != null) resultMap.put(Bytes.asList(key), value);
                 });
             } catch (Exception e) {
                 log.error("Pipeline failed for node: {}", pool, e);
