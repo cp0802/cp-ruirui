@@ -102,15 +102,15 @@ public class InstallAppJobHandler {
         paramMap.put("endTime",endTime);
         paramMap.put("tableName",tableName);
         paramMap.put("trustInstallAppMediaIds",trustInstallAppMediaIds);
-//        try{
-//            //回滚数据
-//            deviceInstallAppInfoDao.deleteDeviceInstallAppInfo();
-//            long t21 = System.currentTimeMillis();
-//            log.info("XXL-JOB, deviceInstallApp. nowTimeStr={},deleteDeviceInstallAppInfo 完成，耗时{}ms", nowTimeStr,t21-t2);
-//            deviceInstallAppInfoDao.insertDeviceInstallAppInfo(paramMap);
-//        }catch (Exception e){
-//            log.error("XXL-JOB, deviceInstallApp. nowTimeStr="+nowTimeStr+",insertDeviceInstallAppInfo 异常",e);
-//        }
+        try{
+            //回滚数据
+            deviceInstallAppInfoDao.deleteDeviceInstallAppInfo();
+            long t21 = System.currentTimeMillis();
+            log.info("XXL-JOB, deviceInstallApp. nowTimeStr={},deleteDeviceInstallAppInfo 完成，耗时{}ms", nowTimeStr,t21-t2);
+            deviceInstallAppInfoDao.insertDeviceInstallAppInfo(paramMap);
+        }catch (Exception e){
+            log.error("XXL-JOB, deviceInstallApp. nowTimeStr="+nowTimeStr+",insertDeviceInstallAppInfo 异常",e);
+        }
         long t3 = System.currentTimeMillis();
         log.info("XXL-JOB, deviceInstallApp. nowTimeStr={},delete+insertDeviceInstallAppInfo 完成，耗时{}ms", nowTimeStr,t3-t2);
         Map<String,Object> pageParamMap = new HashMap<>();
@@ -136,13 +136,12 @@ public class InstallAppJobHandler {
                 Map<Integer, Integer> finalInstallAppIdConvertMap = installAppIdConvertMap;
                 int finalPage = page;
                 int finalI = i;
-                fillRedisDeviceInstallAppInfo(batchDeviceInstallAppList, finalInstallAppIdConvertMap, finalPage, finalI);
-//                deviceThreadExecutor.execute(() -> {
-////                    log.info("XXL-JOB, deviceInstallApp. threadName={}, nowTimeStr={},fillRedisDeviceInstallAppInfo page={},batch={} 开始执行", Thread.currentThread().getName(),nowTimeStr,finalPage,finalI);
-//                    fillRedisDeviceInstallAppInfo(batchDeviceInstallAppList, finalInstallAppIdConvertMap, finalPage, finalI);
-//                });
-//                long t6 = System.currentTimeMillis();
-//                log.info("XXL-JOB, deviceInstallApp. nowTimeStr={},fillRedisDeviceInstallAppInfo page={},batch={}执行完成，耗时{}ms", nowTimeStr,page,i,t6-t5);
+                deviceThreadExecutor.execute(() -> {
+//                    log.info("XXL-JOB, deviceInstallApp. threadName={}, nowTimeStr={},fillRedisDeviceInstallAppInfo page={},batch={} 开始执行", Thread.currentThread().getName(),nowTimeStr,finalPage,finalI);
+                    fillRedisDeviceInstallAppInfo(batchDeviceInstallAppList, finalInstallAppIdConvertMap, finalPage, finalI);
+                });
+                long t6 = System.currentTimeMillis();
+                log.info("XXL-JOB, deviceInstallApp. nowTimeStr={},fillRedisDeviceInstallAppInfo page={},batch={}执行完成，耗时{}ms", nowTimeStr,page,i,t6-t5);
             }
             if(installAppModelList.size() < pageSize){
                 break;
