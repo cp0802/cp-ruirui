@@ -15,7 +15,7 @@ apollo:
   meta: http://172.17.220.35:8080
   bootstrap:
     enabled: true
-    namespaces: application
+    namespaces: application,server.common,xxl-job,sentinel,server.sentinel,server.jedis.config
 spring:
   app-version: 1.0.1
   http:
