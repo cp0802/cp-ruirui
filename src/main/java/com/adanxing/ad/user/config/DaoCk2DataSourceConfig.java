@@ -35,23 +35,10 @@ public class DaoCk2DataSourceConfig {
         return new DruidDataSource();
     }
 
-    @Bean(name = FACTORY_SQL_SESSION)
-    public SqlSessionFactory testSqlSessionFactory(@Qualifier(DATASOURCE) DataSource dataSource, @Qualifier(CONFIGRUATION) org.apache.ibatis.session.Configuration configuration) throws Exception {
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setDataSource(dataSource);
-        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(MAPPER_PACKAGE));
-        bean.setConfiguration(configuration);
-        return bean.getObject();
-    }
-
     @Bean(name = "analysisCk2TransactionManager")
     public DataSourceTransactionManager testTransactionManager(@Qualifier(DATASOURCE) DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
-    @Bean(name = TEMPLATE_SQL_SESSION)
-    public SqlSessionTemplate testSqlSessionTemplate(@Qualifier(FACTORY_SQL_SESSION) SqlSessionFactory sqlSessionFactory) throws Exception {
-        return new SqlSessionTemplate(sqlSessionFactory);
-    }
 
 }

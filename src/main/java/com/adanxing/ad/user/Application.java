@@ -1,17 +1,16 @@
 package com.adanxing.ad.user;
 
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableScheduling
 @EnableTransactionManagement
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@EnableApolloConfig(value = {"application", "server.jedis_cluster.config"})
 @SpringBootApplication(scanBasePackages = "com.adanxing.ad.user")
 @EnableAsync
 @Slf4j

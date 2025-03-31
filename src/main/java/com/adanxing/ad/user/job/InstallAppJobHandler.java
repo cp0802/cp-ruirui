@@ -55,8 +55,8 @@ public class InstallAppJobHandler {
     @Value("${ad.device.install_app.bit_app_id_convert_map}")
     private String bitAppIdConvertMapStr;
 
-    @Autowired
-    AsyncTaskExecutor mediaThreadExecutor;
+    @Resource(name = "deviceThreadExecutor")
+    AsyncTaskExecutor deviceThreadExecutor;
 
 
 
@@ -135,7 +135,7 @@ public class InstallAppJobHandler {
                 Map<Integer, Integer> finalInstallAppIdConvertMap = installAppIdConvertMap;
                 int finalPage = page;
                 int finalI = i;
-                mediaThreadExecutor.execute(() -> {
+                deviceThreadExecutor.execute(() -> {
 //                    log.info("XXL-JOB, deviceInstallApp. threadName={}, nowTimeStr={},fillRedisDeviceInstallAppInfo page={},batch={} 开始执行", Thread.currentThread().getName(),nowTimeStr,finalPage,finalI);
                     fillRedisDeviceInstallAppInfo(batchDeviceInstallAppList, finalInstallAppIdConvertMap, finalPage, finalI);
                 });
