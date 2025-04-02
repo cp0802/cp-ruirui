@@ -230,6 +230,9 @@ public class InstallAppJobHandler {
                             deviceInstallFeature.setDefaultDeviceInstallApp(0);
                         }else if(defaultBitInstallAppIds > 0){
                             deviceInstallFeature.setDefaultDeviceInstallApp(defaultBitInstallAppIds | deviceInstallFeature.getDefaultDeviceInstallApp());
+                        }else{
+                            //没有需要填充的，不关注
+                            continue;
                         }
                     }
                 }catch (Exception e){
