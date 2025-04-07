@@ -141,7 +141,7 @@ public class InstallAppJobHandler {
                     fillRedisDeviceInstallAppInfo(batchDeviceInstallAppList, finalInstallAppIdConvertMap, finalPage, finalI);
                 });
                 long t6 = System.currentTimeMillis();
-                log.info("XXL-JOB, deviceInstallApp. nowTimeStr={},fillRedisDeviceInstallAppInfo page={},batch={}执行完成，耗时{}ms", nowTimeStr,page,i,t6-t5);
+//                log.info("XXL-JOB, deviceInstallApp. nowTimeStr={},fillRedisDeviceInstallAppInfo page={},batch={}执行完成，耗时{}ms", nowTimeStr,page,i,t6-t5);
             }
             if(installAppModelList.size() < pageSize){
                 break;
