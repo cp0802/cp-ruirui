@@ -226,8 +226,9 @@ public class InstallAppJobHandler {
                             continue;
                         }
                         if(trustBitInstallAppIds > 0 || deviceInstallFeature.getTrustDeviceInstallApp() > 0){
+                            deviceInstallFeature.clearDefaultDeviceInstallApp();
+//                            deviceInstallFeature.setDefaultDeviceInstallApp(0);
                             deviceInstallFeature.setTrustDeviceInstallApp(trustBitInstallAppIds | deviceInstallFeature.getTrustDeviceInstallApp());
-                            deviceInstallFeature.setDefaultDeviceInstallApp(0);
                         }else if(defaultBitInstallAppIds > 0){
                             deviceInstallFeature.setDefaultDeviceInstallApp(defaultBitInstallAppIds | deviceInstallFeature.getDefaultDeviceInstallApp());
                         }else{
