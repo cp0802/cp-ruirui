@@ -12,7 +12,7 @@ server:
       max-threads: 2000
       max-connections: 6000
 apollo:
-  meta: http://172.17.220.35:8080
+  meta: http://172.16.1.6:8080
   bootstrap:
     enabled: true
     namespaces: application,server.common,xxl-job,server.sentinel,server.jedis.config
