@@ -1,21 +1,22 @@
-app:
-  id: 10033
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  tomcat:
+    uri-encoding: UTF-8
+    threads:
+      # 根据 CPU 核心数调整，通常 4 核 8 线程的机器，核心数设置 200-400 足够了
+      min-spare: 200           # 最小工作线程
+      max: 2000                # 最大工作线程
+    max-connections: 10000      # 稍微降低一点，让压力反馈更明显
+    accept-count: 5000          # **关键修改**：从 100000 降到 5000
+    # 如果请求在队列中排队超过 2 秒，直接拒绝，避免上游超时
+    connection-timeout: 2000ms  # 连接建立的超时时间
 logging:
   level:
     root: info
     com.adanxing.ad: debug
-server:
-  port: 8080
-  session-timeout: 1800
-  tomcat:
-      uri-encoding: UTF-8
-      max-threads: 2000
-      max-connections: 6000
-apollo:
-  meta: http://172.16.1.6:8080
-  bootstrap:
-    enabled: true
-    namespaces: application,server.common,xxl-job,server.sentinel,server.jedis.config
 spring:
   app-version: 1.0.1
   http:
@@ -25,22 +26,4 @@ spring:
       enabled: true
   profiles:
     active: dev
-  redis:
-    timeout: 50
-    maxIdle: 3000
-    maxTotal: 3000
-    maxWaitMillis: 100
-    minEvictableIdleTimeMillis: 300000
-    numTestsPerEvictionRun: 1024
-    timeBetweenEvictionRunsMillis: 30000
-    testOnBorrow: true
-    testWhileIdle: true
-    block-when-exhausted: true
-    pool:
-      max-active: 3000
-      max-wait: 10000
-      max-total: 30000
-      max-idle: 3000
-      min-idle: 500
-
 

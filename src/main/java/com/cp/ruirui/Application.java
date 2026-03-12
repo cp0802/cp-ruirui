@@ -1,6 +1,5 @@
-package com.adanxing.ad.user;
+package com.cp.ruirui;
 
-import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,8 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableScheduling
 @EnableTransactionManagement
-@EnableApolloConfig(value = {"application", "server.jedis_cluster.config"})
-@SpringBootApplication(scanBasePackages = "com.adanxing.ad.user")
+@SpringBootApplication(scanBasePackages = "com.cp.ruirui")
 @EnableAsync
 @Slf4j
 public class Application {
